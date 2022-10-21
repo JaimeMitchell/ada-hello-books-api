@@ -28,3 +28,12 @@ def broken_endpoint():
     new_hobby = "Surfing"
     response_body["hobbies"].append(new_hobby)
     return response_body
+
+class Book:
+    def __init__(self, id, title, description):
+        self.id = id
+        self.title = title
+        self.description = description
+
+hello_kitty = Book(1,"hello kitty", "a friendly kitten")
+picture_of_dorian = Book(2,"picture of dorian")
