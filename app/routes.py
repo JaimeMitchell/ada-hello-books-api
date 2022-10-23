@@ -9,9 +9,10 @@ class Book:
 
 
 books = [
-    Book(1, "a title 1", "someone 1"),
-    Book(2, "a title 2", "someone 2"),
-    Book(3, "a title 3", "someone 3")
+    Book(1, "kite making", "a books about string management"),
+    Book(2, "picture of dorian gray",
+         "victorian lgbt social commentary, youth fixation"),
+    Book(3, "coffee", "i need some right now")
 ]
 
 books_bp = Blueprint("books", __name__, url_prefix="/books")
@@ -26,15 +27,15 @@ def handle_all_books():
             "title": book.title,
             "author": book.author
         })
-    return jsonify(books_response)
+    return jsonify(books_response), 200
 
 
-@books_bp.route("<book_id>", methods=["GET"])
+@books_bp.route("/<book_id>", methods=["GET"])
 def handle_single_book(book_id):
     try:
         book_id == int(book_id)
     except:
-        return f"{book_id} is invalid", 400
+        return {"message": f"{book_id} is invalid"}, 400
     for book in books:
         if book.id == book_id:
             return {
@@ -42,4 +43,4 @@ def handle_single_book(book_id):
                 "title": book.title,
                 "author": book.author
             }
-    return f"{book_id} is non existant, so you're getting a 404"
+    return {"message": f"{book_id} is non existant, so you're getting a 404"}, 404
