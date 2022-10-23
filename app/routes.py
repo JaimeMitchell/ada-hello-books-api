@@ -43,7 +43,8 @@ class Book:
 # List of instances of the Book class that serve that as hardcoded data
 books = [
     Book(1, "kite making", "a books about string management"),
-    Book(2, "picture of dorian gray", "victorian lgbt social commentary, youth fixation"),
+    Book(2, "picture of dorian gray",
+         "victorian lgbt social commentary, youth fixation"),
     Book(3, "coffee", "i need some right now")
 ]
 
@@ -64,5 +65,3 @@ def handle_books():
             "desciption": book.description
         })
     return jsonify(books_response)  # Can I return this without jsonify
-
-
