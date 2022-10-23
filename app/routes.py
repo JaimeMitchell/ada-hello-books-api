@@ -43,8 +43,7 @@ class Book:
 # List of instances of the Book class that serve that as hardcoded data
 books = [
     Book(1, "kite making", "a books about string management"),
-    Book(2, "picture of dorian gray",
-         "victorian lgbt social commentary, youth fixation"),
+    Book(2, "picture of dorian gray", "victorian lgbt social commentary, youth fixation"),
     Book(3, "coffee", "i need some right now")
 ]
 
@@ -65,3 +64,16 @@ def handle_books():
             "desciption": book.description
         })
     return jsonify(books_response)  # Can I return this without jsonify
+
+
+@books_bp.route("/<book_id>", methods=['GET'])
+def handle_book(book_id):
+    if book_id.isnumeric():
+        book_id = int(book_id)
+    for book in books:
+        if book.id == book_id or book.title == book_id:
+            return{
+                "id": book.id,
+                "title": book.title,
+                "description": book.description
+            }
