@@ -45,8 +45,11 @@ def handle_single_book(book_id):
 
 @books_bp.route("/<book_id>", methods=['GET'])
 def handle_book(book_id):
-    if book_id.isnumeric():
-        book_id = int(book_id)
+    try:
+        if book_id.isnumeric():
+            book_id = int(book_id)
+    except:
+        return {f"{book_id} is invalid", 400}
     for book in books:
         if book.id == book_id or book.title == book_id:
             return{
@@ -54,3 +57,4 @@ def handle_book(book_id):
                 "title": book.title,
                 "description": book.description
             }
+    return {f"{book_id} is non existant", 404}
