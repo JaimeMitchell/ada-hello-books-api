@@ -2,10 +2,10 @@ from flask import Blueprint, jsonify
 
 
 class Book:
-    def __init__(self, id, title, author):
+    def __init__(self, id, title, description):
         self.id = id
         self.title = title
-        self.author = author
+        self.description = description
 
 
 books = [
@@ -25,22 +25,32 @@ def handle_all_books():
         books_response.append({
             "id": book.id,
             "title": book.title,
-            "author": book.author
+            "description": book.description
         })
     return jsonify(books_response), 200
 
 
 @books_bp.route("/<book_id>", methods=["GET"])
 def handle_single_book(book_id):
-    try:
-        book_id == int(book_id)
-    except:
-        return {"message": f"{book_id} is invalid"}, 400
+    if book_id.isnumeric():
+        book_id = int(book_id)
     for book in books:
-        if book.id == book_id:
+        if book.id == book_id or book.title == book_id:
             return {
                 "id": book.id,
                 "title": book.title,
-                "author": book.author
-            }
+                "description": book.description}
     return {"message": f"{book_id} is non existant, so you're getting a 404"}, 404
+
+
+@books_bp.route("/<book_id>", methods=['GET'])
+def handle_book(book_id):
+    if book_id.isnumeric():
+        book_id = int(book_id)
+    for book in books:
+        if book.id == book_id or book.title == book_id:
+            return{
+                "id": book.id,
+                "title": book.title,
+                "description": book.description
+            }
