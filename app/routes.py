@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, abort, make_response
 
 
 class Book:
@@ -30,31 +30,22 @@ def handle_all_books():
     return jsonify(books_response), 200
 
 
-@books_bp.route("/<book_id>", methods=["GET"])
-def handle_single_book(book_id):
-    if book_id.isnumeric():
+def validate(book_id):
+    try:
         book_id = int(book_id)
+    except:
+        abort(make_response({"message": f"book {book_id} is invalid"}, 400))
     for book in books:
-        if book.id == book_id or book.title == book_id:
-            return {
-                "id": book.id,
-                "title": book.title,
-                "description": book.description}
-    return {"message": f"{book_id} is non existant, so you're getting a 404"}, 404
+        if book.id == book_id:
+            return(book)
+    abort(make_response({"message": f"book {book_id} is non existant"}, 404))
 
 
 @books_bp.route("/<book_id>", methods=['GET'])
 def handle_book(book_id):
-    try:
-        if book_id.isnumeric():
-            book_id = int(book_id)
-    except:
-        return {f"{book_id} is invalid", 400}
-    for book in books:
-        if book.id == book_id or book.title == book_id:
-            return{
-                "id": book.id,
-                "title": book.title,
-                "description": book.description
-            }
-    return {f"{book_id} is non existant", 404}
+    book = validate(book_id)
+    return{
+        "id": book.id,
+        "title": book.title,
+        "description": book.description
+    }
