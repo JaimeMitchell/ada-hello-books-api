@@ -7,9 +7,6 @@ def create_app(test_config=None):
     app.register_blueprint(books_bp)
     return app
 
-# import
-# function
-# instantiate
-# import
-# register
-# return app
+    # Register Blueprints here
+    from .routes import hello_world_bp
+    app.register_blueprint(hello_world_bp)
