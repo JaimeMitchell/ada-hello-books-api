@@ -17,16 +17,16 @@ from flask import Blueprint, jsonify, abort, make_response
 books_bp = Blueprint("books", __name__, url_prefix="/books")
 
 
-@books_bp.route("", methods=["GET"])
-def handle_all_books():
-    books_response = []
-    for book in books:
-        books_response.append({
-            "id": book.id,
-            "title": book.title,
-            "description": book.description
-        })
-    return jsonify(books_response), 200
+# @books_bp.route("", methods=["GET"])
+# def handle_all_books():
+#     books_response = []
+#     for book in books:
+#         books_response.append({
+#             "id": book.id,
+#             "title": book.title,
+#             "description": book.description
+#         })
+#     return jsonify(books_response), 200
 
 
 # def validate(book_id):
