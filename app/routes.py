@@ -1,7 +1,5 @@
 from flask import Blueprint, jsonify, abort, make_response
 
-from flask import Blueprint
-
 books_bp = Blueprint("books", __name__, url_prefix="/books") 
 
 # @books_bp.route("", methods=["GET"]) 
