@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, make_response, request, abort, make_respon
 
 books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
 
-
+# CREATE
 @books_bp.route("", strict_slashes=False, methods=["POST"])
 def create_book():
     request_body = request.get_json()
@@ -16,7 +16,7 @@ def create_book():
 
     return make_response(f"Book {new_book.title} successfully created", 201)
 
-
+# READ (GET ALL)
 @books_bp.route("", strict_slashes=False, methods=["GET"])
 def read_all_books():
     books_response = []
@@ -31,7 +31,7 @@ def read_all_books():
         )
     return jsonify(books_response)
 
-
+#VALIDATE ID FOR GET ONE BOOK
 def validate_book(book_id):
     try:
         book_id = int(book_id)
@@ -45,7 +45,7 @@ def validate_book(book_id):
 
     return book
 
-
+# READ (GET ONE)
 @books_bp.route("/<book_id>", methods=["GET"])
 def read_one_book(book_id):
     book = validate_book(book_id)
@@ -54,3 +54,17 @@ def read_one_book(book_id):
         "title": book.title,
         "description": book.description
     }
+
+# UPDATE (PUT)
+@books_bp.route("/<book_id>", methods=["PUT"])
+def update_book(book_id):
+    book = validate_book(book_id)
+
+    request_body = request.get_json()
+
+    book.title = request_body["title"]
+    book.description = request_body["description"]
+
+    db.session.commit()
+
+    return make_response(f"Book #{book.id} successfully updated")
