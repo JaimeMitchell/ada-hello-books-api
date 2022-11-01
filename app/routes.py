@@ -1,11 +1,11 @@
 from app import db
 from app.models.book import Book
-from flask import Blueprint, jsonify, make_response, request
+from flask import Blueprint, jsonify, make_response, request, abort, make_response
 
 books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
 
 
-@books_bp.route("", methods=["POST"])
+@books_bp.route("", strict_slashes=False, methods=["POST"])
 def create_book():
     request_body = request.get_json()
     new_book = Book(title=request_body["title"],
@@ -17,7 +17,7 @@ def create_book():
     return make_response(f"Book {new_book.title} successfully created", 201)
 
 
-@books_bp.route("", methods=["GET"])
+@books_bp.route("", strict_slashes=False, methods=["GET"])
 def read_all_books():
     books_response = []
     books = Book.query.all()
@@ -30,3 +30,27 @@ def read_all_books():
             }
         )
     return jsonify(books_response)
+
+
+def validate_book(book_id):
+    try:
+        book_id = int(book_id)
+    except:
+        abort(make_response({"message": f"book {book_id} invalid"}, 400))
+
+    book = Book.query.get(book_id)
+
+    if not book:
+        abort(make_response({"message": f"book {book_id} not found"}, 404))
+
+    return book
+
+
+@books_bp.route("/<book_id>", methods=["GET"])
+def read_one_book(book_id):
+    book = validate_book(book_id)
+    return {
+        "id": book.id,
+        "title": book.title,
+        "description": book.description
+    }
