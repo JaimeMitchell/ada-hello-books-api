@@ -1,3 +1,4 @@
+from app.book_routes import validate_model
 from app import db
 from app.models.author import Author
 from app.models.book import Book
@@ -13,11 +14,11 @@ def validate_model(author_id):
         abort(make_response(
             jsonify({"message": f"Author {author_id} invalid"}, 400)))
 
-    author = Author.query.get(author.id)
+    author = Author.query.get(author_id)
 
     if not author:
         abort(make_response(
-            jsonify({"message": f"Author {author_id} not found"}, 404)))
+            jsonify({"message": f"{author_id} not found"}, 404)))
 
     return author
 
@@ -31,19 +32,23 @@ def create_author():
     return jsonify(new_author.to_dict())
 
 
+# app/author_routes.py
+
+
 @authors_bp.route("/<author_id>/books", methods=["POST"])
 def create_book(author_id):
 
-    author = validate_model(Author, author_id)
+    author = validate_model(author_id)
 
     request_body = request.get_json()
-    new_book = Book(title=request_body["title"],
-                    description=request_body["description"],
-                    author=author
-                    )
+    new_book = Book(
+        title=request_body["title"],
+        description=request_body["description"],
+        author=author
+    )
     db.session.add(new_book)
     db.session.commit()
-    return make_response(jsonify(f"Book {new_book.title} by {new_book.author.name} successfully created"), 201)
+    return make_response(jsonify(f"Book {new_book.title} by {new_book.author.name} successfully created"), 201) #note nested model new_book.author.name
 
 
 @authors_bp.route("", methods=["GET"])
@@ -57,14 +62,17 @@ def get_all_authors():
 
     authors_response = []
     for author in authors:
-        authors_response.append(author.to_dict())
+        authors_response.append({
+            "id": author.id,
+            "name": author.name
+        })
     return jsonify(authors_response)
 
 
 @authors_bp.route("/<author_id>/books", methods=["GET"])
 def read_books(author_id):
 
-    author = validate_model(Author, author_id)
+    author = validate_model(author_id)
 
     books_response = []
     for book in author.books:
