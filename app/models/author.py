@@ -7,7 +7,7 @@ class Author(db.Model):
     books = db.relationship("Book", back_populates="author")
     # THE ONE, PARENT, only has db.relationship, NO db.foreignkey
 
-    def to_dict(self):
+    def to_dict(self): #GET/READ
         author_as_dict = {}
         author_as_dict["name"] = self.name
 
